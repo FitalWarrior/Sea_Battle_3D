@@ -24,9 +24,9 @@ public class PointClick : MonoBehaviour
     {
         if (_tileMapParrent != null)
         {            
-           _tileMapParrent.ClickEvent(PointX,PointZ);
-            _message.LifeMessage();
-            _message.GameStatusOver();
+           _tileMapParrent.ClickEvent(PointX,PointZ);             
+            _message.GameStatusOver();           
+
         }
     }
 }

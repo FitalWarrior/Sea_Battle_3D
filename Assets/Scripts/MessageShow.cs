@@ -12,6 +12,7 @@ public class MessageShow : MonoBehaviour
     [SerializeField] private TextMeshPro[] _hpText;
     [SerializeField] private TMP_Text _gameStatus;
     [SerializeField] private Image _gameStatusPanel;
+    [SerializeField] private BoxCollider _hitBlockCollider;
 
     // сообщать кол-во палуб
     public void LifeMessage()
@@ -31,6 +32,7 @@ public class MessageShow : MonoBehaviour
             _gameStatusPanel.gameObject.SetActive(true);
             _gameStatus.text = "ТЫ ПОБЕДИЛ";
             _gameStatus.color = Tile.Instance.SetColorIndex[1];
+            _hitBlockCollider.enabled = true;
         }
 
         if (_hpText[0].GetComponentInParent<GenerateTileMap>().CheckLifeShips() <= 0)
@@ -38,9 +40,8 @@ public class MessageShow : MonoBehaviour
             _gameStatusPanel.gameObject.SetActive(true);
             _gameStatus.text = "ТЫ ПРОИГРАЛ";
             _gameStatus.color = Tile.Instance.SetColorIndex[2];
+            _hitBlockCollider.enabled = true;
         }
-     
-        
     }
 
     //перезгрузить сцену
@@ -48,4 +49,5 @@ public class MessageShow : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
     }
+
 }

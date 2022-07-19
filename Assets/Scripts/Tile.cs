@@ -29,8 +29,8 @@ public class Tile : MonoBehaviour
         {
             _hitText = GetComponentInChildren<TextMeshPro>();
             SphereDeckShip = GetComponentInChildren<DeckSphere>();
-            _hitText.gameObject.SetActive(false);
-            SphereDeckShip.gameObject.SetActive(false);
+            _hitText.gameObject.SetActive(false);            
+            SphereDeckShip.gameObject.GetComponent<MeshRenderer>().enabled = false;
         }
     }
 

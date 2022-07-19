@@ -20,16 +20,16 @@ public class GenerateTileMap : MonoBehaviour
 
     private int[] ShipCount = { 0, 4, 3, 2, 1 };
 
-    private List<Ship> _shipsList = new List<Ship>();    
+    public readonly List<Ship> _shipsList = new List<Ship>();    
     //--------//    
 
 
-    private struct SetCordinate 
+    public struct SetCordinate 
     {
         public int X, Z;
     }
 
-    private struct Ship 
+    public struct Ship 
     {
         public SetCordinate[] ShipCordinates;
     }
@@ -47,7 +47,7 @@ public class GenerateTileMap : MonoBehaviour
 
     private void Update()
     {
-        //PlayerInput();
+        PlayerInput();
 
         /*Дебагинг проверки кол-во палуб*/
         if (Input.GetKeyDown(KeyCode.F))
@@ -57,16 +57,17 @@ public class GenerateTileMap : MonoBehaviour
         }
 
         // Ходит враг бот
-        TurnManager.Instance.EnemyTurn();
-        //_message.LifeMessage();
-
-
+        TurnManager.Instance.EnemyTurn();        
     }
 
     // Чек ввода
     private void PlayerInput()
-    { 
+    {
         // для дебагинга
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     // генерация сеточной карты в плоскостях X,Z
@@ -187,8 +188,8 @@ public class GenerateTileMap : MonoBehaviour
             foreach (SetCordinate cordinate in cordinates)
             {                
                 _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().MeshRenderer.material.color = Tile.Instance.SetColorIndex[1];
-                _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().ColorIndex = 1;
-                _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().SphereDeckShip.gameObject.SetActive(true);
+                _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().ColorIndex = 1;                
+                _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().SphereDeckShip.GetComponent<MeshRenderer>().enabled = true;
                 _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().SphereDeckShip.GetComponent<MeshRenderer>().material.color = Tile.Instance.SetColorIndex[1];
 
                 if (_enemyMode == true && _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().ColorIndex == 1)
@@ -197,8 +198,8 @@ public class GenerateTileMap : MonoBehaviour
                 }
                 else
                 {
-                    _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().MeshRenderer.material.color = Tile.Instance.SetColorIndex[1];
-                    _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().SphereDeckShip.gameObject.SetActive(true);
+                    _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().MeshRenderer.material.color = Tile.Instance.SetColorIndex[1];                    
+                    _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().SphereDeckShip.GetComponent<MeshRenderer>().enabled = true;
                     _mapArea[cordinate.X, cordinate.Z].GetComponent<Tile>().SphereDeckShip.GetComponent<MeshRenderer>().material.color = Tile.Instance.SetColorIndex[1];
                 }
 
@@ -228,6 +229,7 @@ public class GenerateTileMap : MonoBehaviour
     {
         int TileIndex = _mapArea[X, Z].GetComponent<Tile>().ColorIndex;
         bool Result = false;
+        
 
         switch (TileIndex)
         {
@@ -238,35 +240,45 @@ public class GenerateTileMap : MonoBehaviour
                 _mapArea[X, Z].GetComponent<Tile>()._hitText.gameObject.SetActive(true);
                 _mapArea[X, Z].GetComponent<Tile>()._hitText.text = "Промах";
                 _mapArea[X, Z].GetComponent<Tile>()._hitText.color = Tile.Instance.SetColorIndex[2];
+                _mapArea[X, Z].GetComponent<Tile>().SphereDeckShip.GetComponent<MeshRenderer>().enabled = false;
+                _message.LifeMessage();
+                _message.GameStatusOver();
                 /*Промах*/
                 Result = false;
                 break;
 
             case 1:
                 _mapArea[X, Z].GetComponent<Tile>().ColorIndex = 3;
-                _mapArea[X, Z].GetComponent<Tile>().MeshRenderer.material.color = Tile.Instance.SetColorIndex[3];                
+                _mapArea[X, Z].GetComponent<Tile>().MeshRenderer.material.color = Tile.Instance.SetColorIndex[3];
+                _message.LifeMessage();
+                _message.GameStatusOver();
                 Result = true;
 
                 if (CheckShoot(X,Z))
                 {   
                     _mapArea[X, Z].GetComponent<Tile>()._hitText.gameObject.SetActive(true);
                     _mapArea[X, Z].GetComponent<Tile>()._hitText.text = "Убит";
-                    _mapArea[X, Z].GetComponent<Tile>()._hitText.color = Tile.Instance.SetColorIndex[1];
-                    _mapArea[X, Z].GetComponent<Tile>().SphereDeckShip.gameObject.SetActive(true);
+                    _mapArea[X, Z].GetComponent<Tile>()._hitText.color = Tile.Instance.SetColorIndex[1];                    
+                    _mapArea[X, Z].GetComponent<Tile>().SphereDeckShip.GetComponent<MeshRenderer>().enabled = true;
                     _mapArea[X, Z].GetComponent<Tile>().SphereDeckShip.GetComponent<MeshRenderer>().material.color = Tile.Instance.SetColorIndex[0];
+                    _message.LifeMessage();
+                    _message.GameStatusOver();
                 }
                 else
                 {                    
                     _mapArea[X, Z].GetComponent<Tile>()._hitText.gameObject.SetActive(true);
                     _mapArea[X, Z].GetComponent<Tile>()._hitText.text = "Попал";
-                    _mapArea[X, Z].GetComponent<Tile>()._hitText.color = Tile.Instance.SetColorIndex[3];
-                    _mapArea[X, Z].GetComponent<Tile>().SphereDeckShip.gameObject.SetActive(true);
+                    _mapArea[X, Z].GetComponent<Tile>()._hitText.color = Tile.Instance.SetColorIndex[3];                    
+                    _mapArea[X, Z].GetComponent<Tile>().SphereDeckShip.GetComponent<MeshRenderer>().enabled = true;
                     _mapArea[X,Z].GetComponent<Tile>().SphereDeckShip.GetComponent<MeshRenderer>().material.color = Tile.Instance.SetColorIndex[3];
+                    _message.LifeMessage();
+                    _message.GameStatusOver();
                 }
                 break;
+
         }
 
-        return Result;
+        return Result;        
     }
 
     //проверка можемли стрелять
@@ -297,6 +309,11 @@ public class GenerateTileMap : MonoBehaviour
         return Result; 
     }
 
+    public int GetDeckCordinate(int X,int Z) 
+    {
+        return _mapArea[X, Z].GetComponent<Tile>().ColorIndex;
+    }
+
     //проверка кол-во палуб
     public int CheckLifeShips() 
     {
@@ -324,8 +341,8 @@ public class GenerateTileMap : MonoBehaviour
             for (int X = 0; X < _gridLenght; X++)
             {                
                 _mapArea[X,Z].GetComponent<Tile>().MeshRenderer.material.color = Tile.Instance.SetColorIndex[0];
-                _mapArea[X, Z].GetComponent<Tile>().ColorIndex = 0;
-                _mapArea[X, Z].GetComponent<Tile>().SphereDeckShip.gameObject.SetActive(false);                
+                _mapArea[X, Z].GetComponent<Tile>().ColorIndex = 0;                              
+                _mapArea[X, Z].GetComponent<Tile>().SphereDeckShip.GetComponent<MeshRenderer>().enabled = false;
             }
         }
     }
@@ -362,7 +379,8 @@ public class GenerateTileMap : MonoBehaviour
         {
             TurnManager.Instance.PlayerClick(X, Z);
         }
-        
+        _message.LifeMessage();
+
     }
 
     
